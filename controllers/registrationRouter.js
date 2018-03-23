@@ -45,7 +45,7 @@ registrationRouter.post('/', async (req, res) => {
             try {
                 // assert file is an image
                 inputValidator.assertFileIsImage(companyLogo);
-                //save company logo to s3, get back a url to the saved image and add that url to companydata
+                //save company logo to s3, get back a url to and add that url to companydata
                 let logoURL = await AWS.uploadFileToS3Bucket(companyLogo);
                 companyData.LogoURL = logoURL;
             }

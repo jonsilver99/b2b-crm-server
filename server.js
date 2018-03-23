@@ -1,7 +1,7 @@
 'use strict';
 // Requires //
 const express = require('express');
-const headers_setup = require('./controllers/headers_setup');
+const cors_setup = require('./controllers/cors_setup');
 const dbConnection = require('./mongodb/dbConnection');
 const bodyParser = require('body-parser');
 const expressFileUpload = require('express-fileupload');
@@ -26,8 +26,8 @@ server.use((req, res, next) => {
     next();
 })
 
-// headers definition middelware
-server.use(headers_setup);
+// CORS definition middelware
+server.use(cors_setup);
 
 // parsers middleware
 server.use(bodyParser.urlencoded({ extended: false }))

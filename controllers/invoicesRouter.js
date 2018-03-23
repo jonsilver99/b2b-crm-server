@@ -34,13 +34,7 @@ invoicesRouter.post('/', (req, res, next) => {
         newInvoice.save()
             .then(savedInvoice => {
                 return CompanyModel.findByIdAndUpdate(
-                    customerId,
-                    {
-                        "$push": {
-                            Invoices: savedInvoice._id
-                        }
-                    },
-                    { new: true }
+                    customerId, { "$push": { Invoices: savedInvoice._id } }, { new: true }
                 )
             })
             .then(updatedCustomer => {
