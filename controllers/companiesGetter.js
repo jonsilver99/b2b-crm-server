@@ -1,3 +1,4 @@
+'use strict';
 const CompanyModel = require('../mongodb/schemaAndModel').CompanyModel;
 module.exports = (req, res, next) => {
     let userId = req.query.loggedInUser;
@@ -21,6 +22,6 @@ module.exports = (req, res, next) => {
             res.status(200).send(allCompanies);
         })
         .catch(err => {
-            res.status(400).send(err);
+            res.status(500).send(err);
         })
 }

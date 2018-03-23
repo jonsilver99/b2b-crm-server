@@ -1,3 +1,4 @@
+'use strict';
 const AWS = require('../external-services/aws-service');
 const registrationRouter = require('express').Router()
 const inputValidator = require('../handlers/inputValidator');
@@ -57,10 +58,10 @@ registrationRouter.post('/', async (req, res) => {
         let newCompany = new CompanyModel(companyData)
         newCompany.save()
             .then((savedCompany) => {
-                res.status(200).send({ success: true, msg: `Company: ${savedCompany.CompanyName} registered succesfuly` });
+                res.status(200).send({ successMsg: `Company: ${savedCompany.CompanyName} registered succesfuly` });
             })
             .catch(err => {
-                res.status(400).send(JSON.stringify(err));
+                res.status(500).send(err);
             })
     }
 })

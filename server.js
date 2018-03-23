@@ -1,3 +1,4 @@
+'use strict';
 // Requires //
 const express = require('express');
 const headers_setup = require('./controllers/headers_setup');

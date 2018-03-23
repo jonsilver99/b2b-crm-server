@@ -4,8 +4,8 @@ let ilegalChars = new RegExp(/[|&;$%@"'<>(){}+,]/g);
 let maxLength = {
     CompanyName: 35,
     CompanyNumber: 20,
-    Username: 35,
-    Password: 35,
+    Username: 30,
+    Password: 30,
     Address: 35,
     Country: 45,
     About: 35,
@@ -20,7 +20,6 @@ let requiredFields = ["CompanyName", "CompanyNumber", "Country", "Username", "Pa
 class InputValidator {
 
     static processData(data) {
-
         let errors = {}
 
         for (let fieldName in data) {
@@ -35,7 +34,6 @@ class InputValidator {
 
     static isValid(fieldName, fieldValue) {
         let fieldErrors = [];
-
         if (requiredFields.includes(fieldName)) {
             if (this.hasNoValue(fieldValue)) {
                 fieldErrors.push('No input given');

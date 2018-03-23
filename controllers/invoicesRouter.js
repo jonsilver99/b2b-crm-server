@@ -1,3 +1,4 @@
+'use strict';
 const invoicesRouter = require('express').Router()
 const CompanyModel = require('../mongodb/schemaAndModel').CompanyModel;
 const InvoiceModel = require('../mongodb/schemaAndModel').InvoiceModel;
@@ -10,11 +11,10 @@ invoicesRouter.get('/:userId', (req, res, next) => {
     } else {
         InvoiceModel.find({ 'SuppliedTo.CompanyId': req.params.userId })
             .then(myInvoices => {
-                console.log(myInvoices);
                 res.status(200).send(myInvoices);
             })
             .catch(err => {
-                res.status(400).send(err);
+                res.status(500).send(err);
             })
     }
 });
@@ -44,10 +44,10 @@ invoicesRouter.post('/', (req, res, next) => {
                 )
             })
             .then(updatedCustomer => {
-                res.status(200).send({ msg: 'New Invoice Sent!' });
+                res.status(200).send({ successMsg: 'New Invoice Sent!' });
             })
             .catch(err => {
-                res.status(400).send(err);
+                res.status(500).send(err);
             })
     }
 });
@@ -60,10 +60,10 @@ invoicesRouter.post('/:invoiceId', (req, res, next) => {
 
     InvoiceModel.findByIdAndUpdate(invoiceToUpdate, updateData, { new: true })
         .then(updatedInvoice => {
-            res.status(200).send(updatedInvoice);
+            res.status(200).send({ successMsg: 'Invoice Updated', updatedInvoice: updatedInvoice });
         })
         .catch(err => {
-            res.status(400).send(err);
+            res.status(500).send(err);
         })
 });
 

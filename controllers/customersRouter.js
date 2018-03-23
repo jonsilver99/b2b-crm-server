@@ -1,3 +1,4 @@
+'use strict';
 const customersRouter = require('express').Router()
 const CompanyModel = require('../mongodb/schemaAndModel').CompanyModel;
 const InvoiceModel = require('../mongodb/schemaAndModel').InvoiceModel;
@@ -21,10 +22,14 @@ customersRouter.post('/', (req, res, next) => {
                 return 'exception'
             })
             .then(result => {
-                return (result == 'success') ? res.status(200).send('Customer sign-up succeeded') : res.status(400).send('Customer sign-up not validated')
+                if (result == 'success') {
+                    res.status(200).send({ successMsg: 'Customer sign-up succeeded' })
+                } else {
+                    res.status(400).send('Customer sign-up not validated');
+                }
             })
             .catch(err => {
-                res.end(err);
+                res.status(500).end(err);
             })
     }
 })
@@ -38,11 +43,10 @@ customersRouter.get('/allmycustomers/:userId', (req, res, next) => {
             select: ["CompanyName", "CompanyNumber", "Country", "Address", "About", "LogoURL"],
         })
         .then(costumers => {
-            console.log(costumers);
             res.status(200).send(costumers);
         })
         .catch(err => {
-            res.status(400).send(err);
+            res.status(500).send(err);
         })
 })
 
@@ -59,11 +63,10 @@ customersRouter.get('/oneofmycustomers/:userId/:customerId', (req, res, next) =>
         })
         .select(["CompanyName", "CompanyNumber", "Country", "Address", "About", "LogoURL", "Invoices"])
         .then(costumer => {
-            console.log(costumer);
             res.status(200).send(costumer);
         })
         .catch(err => {
-            res.status(400).send(err);
+            res.status(500).send(err);
         })
 })
 

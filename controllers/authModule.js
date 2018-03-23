@@ -1,3 +1,4 @@
+'use strict';
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const inputValidator = require('../handlers/inputValidator');
@@ -29,7 +30,7 @@ const authModule = {
                 let matchedUser = await authModule.findExistingUser(user);
                 const authToken = jwt.sign(matchedUser, jwtSecret);
                 res.setHeader("Authorization", authToken)
-                // delete username and password keys from matched user, then responsd with a full login status
+                // remove username and password keys before sending object to client 
                 delete matchedUser.Username
                 delete matchedUser.Password
                 let loginStatus = {
@@ -37,11 +38,11 @@ const authModule = {
                     jwtToken: authToken,
                     loggedInUser: matchedUser
                 }
-                return res.status(200).json(loginStatus);
+                return res.status(200).send(loginStatus);
             }
             catch (err) {
                 console.log(err);
-                return res.status(401).send(err.message);
+                return res.status(401).send(err);
             }
         }
     },
@@ -69,6 +70,7 @@ const authModule = {
                     }
                 })
                 .catch((err) => {
+                    console.log(err);
                     return res.status(500).send(err);
                 })
         }
@@ -79,12 +81,13 @@ const authModule = {
             .select(['_id', 'Username', 'Password', 'CompanyName', 'CompanyNumber', 'Country', 'Address', 'About', 'LogoURL'])
             .then(foundCompany => {
                 if (!foundCompany || foundCompany.length < 1) {
-                    throw new Error("No User/Company registration under those credentials");
+                    throw ("No User/Company registration under those credentials");
                 }
                 foundCompany._doc.validUser = true;
                 return foundCompany._doc
             })
             .catch(err => {
+                console.log(err);
                 throw err;
             })
     },
@@ -94,7 +97,7 @@ const authModule = {
             jwt.verify(token, jwtSecret, function (err, decodedToken) {
                 if (err) {
                     console.log(err)
-                    return reject({ msg: "Token validation process failed", errData: err });
+                    return reject(err);
                 }
                 return resolve(decodedToken);
             });
