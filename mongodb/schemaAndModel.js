@@ -37,7 +37,6 @@ InvoiceSchema.pre('save', function (next) {
     if (this.PaymentType === "") {
         this.PaymentType = 'N.A';
     }
-
     // resolve price after discount
     this.Discount = this.Discount / 100
     this.Price = this.Price - this.Price * this.Discount;
@@ -45,6 +44,16 @@ InvoiceSchema.pre('save', function (next) {
     // re-assure date value
     if (!this.Date) {
         this.Date = Date.now();
+    }
+    next();
+})
+
+CompanySchema.pre('save', function (next) {
+    if (this.About === "") {
+        this.About = '- NA -';
+    }
+    if (this.Address === "") {
+        this.Address = '- NA -';
     }
     next();
 })
