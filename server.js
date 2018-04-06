@@ -8,7 +8,8 @@ const expressFileUpload = require('express-fileupload');
 
 const registrationRouter = require('./controllers/registrationRouter');
 const authModule = require('./controllers/authModule');
-const companiesGetter = require('./controllers/companiesGetter');
+
+const companiesRouter = require('./controllers/companiesRouter');
 const customersRouter = require('./controllers/customersRouter');
 const invoicesRouter = require('./controllers/invoicesRouter');
 
@@ -38,7 +39,7 @@ server.use(expressFileUpload());
 server.use("/register", registrationRouter);
 server.use("/login", authModule.login);
 server.use("/api", authModule.verifyLogin);
-server.use("/api/companies", companiesGetter);
+server.use("/api/companies", companiesRouter);
 server.use("/api/customers", customersRouter);
 server.use("/api/invoices", invoicesRouter);
 

@@ -10,22 +10,27 @@ customersRouter.post('/', (req, res, next) => {
     if (!companyId || !newCustomerId) {
         res.status(404).end("No data found");
     } else {
-        CompanyModel.findByIdAndUpdate(companyId, { "$push": { Customers: newCustomerId } }, { new: true })
+        CompanyModel.findByIdAndUpdate(companyId, { "$addToSet": { Customers: newCustomerId } }, { new: true })
+            .select(["CompanyName", "CompanyNumber", "Country", "Address", "About", "LogoURL", "Customers"])
+            .lean()
             .then(updatedCompany => {
+                let result = { successMsg: null, updatedCompany: null }
                 // validate that new customer is indeed registered
                 let newCustomerList = updatedCompany.Customers;
                 for (let i = 0; i < newCustomerList.length; i++) {
                     if (newCustomerList[i].toString() == newCustomerId) {
-                        return 'success'
+                        updatedCompany.ImACustomer = true;
+                        result.successMsg = 'Customer sign-up succeeded';
+                        result.updatedCompany = updatedCompany;
                     }
                 }
-                return 'exception'
+                return result
             })
             .then(result => {
-                if (result == 'success') {
-                    res.status(200).send({ successMsg: 'Customer sign-up succeeded' })
+                if (result.successMsg == 'Customer sign-up succeeded') {
+                    res.status(200).send(result)
                 } else {
-                    res.status(400).send('Customer sign-up not validated');
+                    throw { error: 'Exception : Customer sign-up not validated' };
                 }
             })
             .catch(err => {
@@ -36,11 +41,16 @@ customersRouter.post('/', (req, res, next) => {
 
 // Get all customers to display as list on dom
 customersRouter.get('/allmycustomers/:userId', (req, res, next) => {
-    CompanyModel.findById(req.params.userId)
+
+    let userId = req.params.userId;
+    let skipValue = parseInt(req.query.skip);
+
+    CompanyModel.findById(userId)
         .select('Customers')
         .populate({
             path: "Customers",
             select: ["CompanyName", "CompanyNumber", "Country", "Address", "About", "LogoURL"],
+            options: { skip: skipValue, limit: 15 }
         })
         .then(costumers => {
             res.status(200).send(costumers);
