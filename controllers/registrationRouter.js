@@ -4,7 +4,7 @@ const registrationRouter = require('express').Router()
 const inputValidator = require('../handlers/inputValidator');
 const CompanyModel = require('../mongodb/schemaAndModel').CompanyModel;
 
-// async form validator
+// async form field validator
 registrationRouter.get('/validateFieldValue', (req, res, next) => {
     let query = {};
     let fieldName = req.query.fieldName;
