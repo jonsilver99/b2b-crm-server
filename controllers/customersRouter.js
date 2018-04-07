@@ -47,12 +47,14 @@ customersRouter.get('/allmycustomers/:userId', (req, res, next) => {
 
     CompanyModel.findById(userId)
         .select('Customers')
+        .lean()
         .populate({
             path: "Customers",
             select: ["CompanyName", "CompanyNumber", "Country", "Address", "About", "LogoURL"],
-            options: { skip: skipValue, limit: 15 }
+            options: { skip: skipValue, limit: 15, sort: { $natural: 1 } }
         })
         .then(costumers => {
+            console.log(costumers);
             res.status(200).send(costumers);
         })
         .catch(err => {

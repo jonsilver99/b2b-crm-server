@@ -7,7 +7,7 @@ companiesRouter.get('/', (req, res, next) => {
     let userId = req.query.loggedInUser;
     let skipValue = parseInt(req.query.skip);
 
-    CompanyModel.find({}, null, { skip: skipValue, limit: 15 })
+    CompanyModel.find({}, null, { skip: skipValue, limit: 15, sort: { $natural: 1 } })
         .select(["CompanyName", "CompanyNumber", "Country", "Address", "About", "LogoURL", "Customers"])
         .lean()
         .then(allCompanies => {
